@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ArtSpaceApp</string>
+    <string name="art_title">Still Life of Blue Rose and Other Flowers</string>
+    <string name="artist">Owen Wilson</string>
+    <string name="year">(2021)</string>
+    <string name="image_content" >Art_SPaceImmage</string>
+
+</resources>
