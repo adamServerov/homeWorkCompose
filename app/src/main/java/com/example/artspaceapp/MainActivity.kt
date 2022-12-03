@@ -10,10 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,7 +46,79 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ArtSpaceScreen() {
 
-    var state by mutableStateOf(ArtSpaceState())
+    var valueIterator by mutableStateOf(0)
+
+
+    var imageChangeMain by remember { mutableStateOf(0) }
+    var authorChangeMain by remember { mutableStateOf(0) }
+
+
+//    fun checking(image: Int? = null, author: Int? = null, art: Int? = null) {
+//
+//        if (image != null) {
+//            when (valueIterator) {
+//                0 -> imageChangeMain = R.drawable.ic_baseline_2k_24
+//                1 -> imageChangeMain = R.drawable.ic_launcher_background
+//                else -> imageChangeMain = R.drawable.ic_launcher_foreground
+//            }
+//        }
+//        else if (author != null) {
+//            when (valueIterator) {
+//                0 -> authorChangeMain = R.string.artist
+//                1 -> authorChangeMain = R.string.art_title2
+//                else -> authorChangeMain = R.string.art_title3
+//            }
+//        } else {
+//            when (valueIterator) {
+//                0 -> artChangeMain = R.string.art_title
+//                1 -> artChangeMain = R.string.art_title2
+//                else -> artChangeMain = R.string.art_title3
+//            }
+//        }
+//        //return rap
+//    }
+
+    fun iterateValue(
+        imageChange: Int? = null,
+        authorChange: Int? = null,
+        artChange: Int? = null
+    ): Int {
+        var replace: Int
+        if (imageChange != null) {
+            replace = imageChange
+            replace = when (valueIterator) {
+                0 -> R.drawable.ic_baseline_2k_24
+                1 -> R.drawable.ic_launcher_background
+                else -> R.drawable.ic_launcher_foreground
+            }
+        } else if (authorChange != null) {
+            replace = authorChange
+            replace = when (valueIterator) {
+                0 -> R.string.artist
+                1 -> R.string.artist2
+                else -> R.string.artist3
+            }
+        } else {
+            replace = artChange ?: 0
+            replace = when (valueIterator) {
+                0 -> R.string.art_title
+                1 -> R.string.art_title2
+                else -> R.string.art_title3
+            }
+        }
+        return replace
+    }
+//    fun iterateValueAuth(authorChange: Int) : Int {
+//        var replace: Int
+//        replace = authorChange
+//        replace = when (valueIterator) {
+//            0 -> R.st.ic_baseline_2k_24
+//            1 -> R.drawable.ic_launcher_background
+//            else -> R.drawable.ic_launcher_foreground
+//        }
+//
+//        return replace
+//    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -69,7 +138,7 @@ fun ArtSpaceScreen() {
                 shape = MaterialTheme.shapes.medium
             ) {
                 Image(
-                    painter = painterResource(state.image ?: 0),
+                    painter = painterResource(iterateValue(imageChangeMain) ?: 0),
                     contentDescription = stringResource(id = R.string.image_content),
                     modifier = Modifier.padding(16.dp)
                 )
@@ -90,13 +159,17 @@ fun ArtSpaceScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(id = R.string.art_title),
+                        text = stringResource(iterateValue(artChange = imageChangeMain)),
                         fontSize = 19.sp,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${stringResource(id = R.string.artist)} ${stringResource(id = R.string.year)}",
+                        text = "${stringResource(iterateValue(authorChange = imageChangeMain))} ${
+                            stringResource(
+                                id = R.string.year
+                            )
+                        }",
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
                     )
@@ -108,13 +181,33 @@ fun ArtSpaceScreen() {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                Button(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
+
+                Button(onClick = {
+
+                    if (valueIterator == 0) {
+                        valueIterator = 2
+                    } else {
+                        valueIterator--
+                        iterateValue(imageChangeMain)
+                    }
+
+
+                }, modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Previous"
                     )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                Button(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
+                Button(onClick = {
+                    if (valueIterator == 2) {
+                        valueIterator = 0
+                    } else {
+                        valueIterator++
+                        iterateValue(imageChangeMain)
+                    }
+
+
+                }, modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Next"
                     )
@@ -130,13 +223,11 @@ fun ArtSpaceScreen() {
 
 
 data class ArtSpaceState(
-    val image: Int? = null,
-    val onPreviousButClicked: () -> Unit = {},
-    val onNextButClicked: () -> Unit = {},
-    val artistString: String? = null,
-    val artTitle: String? = null,
-    val artYear: String? = null,
-)
+    var initialValueForImage: Int? = null,
+    val initialValueForAuthor: Int? = null,
+    val initialValueForArt: Int? = null,
+
+    )
 
 
 @Preview(showBackground = true)
